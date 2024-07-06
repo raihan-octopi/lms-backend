@@ -1,20 +1,37 @@
-require('dotenv').config(); // Load dotenv to read .env file
-
+// app.js or index.js
 const express = require('express');
-const app = express();
+const mongoose = require('mongoose');
+const dotenv = require('dotenv');
 const cors = require('cors');
 
+// Load environment variables
+dotenv.config();
+
+// Initialize Express app
+const app = express();
+
+// Middleware
 app.use(cors());
+app.use(express.json());
 
-// Access environment variables
-const PORT = process.env.PORT || 5000;
-const NODE_ENV = process.env.NODE_ENV || 'development';
+// Connect to MongoDB
 
-// Root route
-app.get('/', (req, res) => {
-  res.send(`Hello World! Environment: ${NODE_ENV}`);
+
+const mongoURI = process.env.MONGO_URI;
+mongoose.connect(mongoURI, {
+  })
+    .then(() => console.log('MongoDB connected'))
+    .catch(err => console.error('MongoDB connection error', err));
+
+// Routes
+app.get('/', (req, res) =>{
+    res.send('LMS server is running running on the port 5000' );
 });
+const userRoutes = require('./routes/userRoutes');
+app.use('/api/users', userRoutes);
 
+// Start the server
+const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT} in ${NODE_ENV} mode`);
+  console.log(`Server is running on port ${PORT}`);
 });
